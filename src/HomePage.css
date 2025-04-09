@@ -1,0 +1,30 @@
+/* Quick Stats Section */
+.quick-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+  
+  .stat-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: 30%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .stat-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+  }
+  
+  .stat-card p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+  }

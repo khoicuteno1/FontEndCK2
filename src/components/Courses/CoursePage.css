@@ -1,0 +1,45 @@
+.course-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .course-page h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  
+  .add-course-form, .course-list {
+    margin-bottom: 40px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
