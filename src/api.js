@@ -1,6 +1,6 @@
 import axios from 'axios';
 
- const API_URL = 'http://localhost:3030/api';
+const API_URL = 'https://backendck2.onrender.com/api';
 
 export const getStudents = async () => {
   try {
