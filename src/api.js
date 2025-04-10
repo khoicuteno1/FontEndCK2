@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = `${process.env.REACT_APP_API_URL}`;
+ const API_URL = 'http://localhost:3030/api';
 
 export const getStudents = async () => {
   try {
@@ -140,35 +140,33 @@ export const getEnrollments = async () => {
   }
 };
 
+
 export const addEnrollments = async (enrollmentsData) => {
   try {
-    // Lấy danh sách tất cả các ghi danh đã có trong hệ thống
-    const checkDuplicateResponse = await axios.get(`${API_URL}/enrollments`, {
-      params: {
-        courseId: enrollmentsData.courseId,  // Kiểm tra theo courseId của khóa học
-      },
+    // Kiểm tra sinh viên đã ghi danh vào khóa học này chưa
+    const { data: existingEnrollments } = await axios.get(`${API_URL}/enrollments`, {
+      params: { courseId: enrollmentsData.courseId },
     });
 
-    // Kiểm tra xem sinh viên đã ghi danh vào khóa học này chưa
-    if (Array.isArray(checkDuplicateResponse.data)) {
-      // Duyệt qua tất cả các ghi danh để kiểm tra
-      for (const enrollment of checkDuplicateResponse.data) {
-        if (enrollment.studentId === enrollmentsData.studentId) {
-          // Nếu tìm thấy sinh viên đã ghi danh vào khóa học này
-          throw new Error("Sinh viên đã ghi danh vào khóa học này.");
-        }
-      }
+    const isDuplicate = existingEnrollments.some(
+      (enrollment) => enrollment.studentId === enrollmentsData.studentId
+    );
+
+    if (isDuplicate) {
+      // Trả về lỗi rõ ràng cho phía client (component) xử lý
+      return { success: false, message: "Sinh viên đã ghi danh vào khóa học này." };
     }
 
-    // Nếu không có trùng lặp, tiếp tục thêm ghi danh
+    // Thêm ghi danh mới nếu không trùng
     const response = await axios.post(`${API_URL}/enrollments`, enrollmentsData);
-    return response.data;
+    return { success: true, data: response.data };
 
   } catch (error) {
-    console.error('Error adding enrollments:', error);
-    throw error;
+    console.error("Lỗi khi thêm ghi danh:", error);
+    return { success: false, message: error.message || "Đã xảy ra lỗi không xác định." };
   }
 };
+
 
 
 export const updateEnrollments = async (departmentId, enrollmentsData) => {

@@ -5,9 +5,10 @@ export default function AddEnrollment({ onEnrollmentAdded }) {
   const [formData, setFormData] = useState({
     studentId: "",
     courseId: "",
-    semester: "",  // Thêm trường semester vào formData
+    semester: "",
     enrollDate: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -17,8 +18,20 @@ export default function AddEnrollment({ onEnrollmentAdded }) {
       try {
         const studentsData = await getStudents();
         const coursesData = await getCourses();
+
+        // Loại bỏ các khóa học bị trùng courseName
+        const uniqueCourses = [];
+        const courseNames = new Set();
+
+        for (const course of coursesData) {
+          if (!courseNames.has(course.courseName)) {
+            courseNames.add(course.courseName);
+            uniqueCourses.push(course);
+          }
+        }
+
         setStudents(studentsData);
-        setCourses(coursesData);
+        setCourses(uniqueCourses);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       }
@@ -34,12 +47,11 @@ export default function AddEnrollment({ onEnrollmentAdded }) {
     const courseId = e.target.value;
     setFormData({ ...formData, courseId });
 
-    // Tìm khóa học được chọn và cập nhật học kỳ tương ứng
     const selectedCourse = courses.find(course => course.id === parseInt(courseId));
     if (selectedCourse) {
       setFormData(prevData => ({
         ...prevData,
-        semester: selectedCourse.semester,  // Tự động điền học kỳ
+        semester: selectedCourse.semester,
       }));
     }
   };
@@ -47,37 +59,26 @@ export default function AddEnrollment({ onEnrollmentAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
-      // Kiểm tra trùng lặp trước khi thêm ghi danh
-      const checkDuplicateResponse = await addEnrollments(formData);
-      if (checkDuplicateResponse) {
-        alert("Thành công!");
+      // Gửi form ghi danh
+      const result = await addEnrollments(formData);
+
+      if (result && result.success === false) {
+        alert("Trùng khóa học!");
+      } else {
+        alert("Thêm ghi danh thành công!");
+        setFormData({ studentId: "", courseId: "", semester: "", enrollDate: "" });
         onEnrollmentAdded();
-        setLoading(false);
-        return; // Dừng lại nếu có trùng lặp
       }
-  
-      // Nếu không có trùng lặp, tiếp tục thêm ghi danh
-      await addEnrollments(formData);
-  
-      // Thông báo thành công
-      alert("Thêm ghi danh thành công!");
-  
-      // Reset form sau khi thêm thành công
-      setFormData({ studentId: "", courseId: "", semester: "", enrollDate: "" });
-  
-      // Cập nhật danh sách sau khi thêm
-      onEnrollmentAdded();
-  
+
     } catch (error) {
-      alert("Trùng khóa học!");
+      alert("Đã xảy ra lỗi khi thêm ghi danh!");
       console.error(error);
     }
-    
+
     setLoading(false);
   };
-  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -85,14 +86,16 @@ export default function AddEnrollment({ onEnrollmentAdded }) {
 
       <div>
         <label>Sinh Viên:</label>
-        <select name="studentId" value={formData.studentId} onChange={handleChange} required>
-          <option value="">Chọn sinh viên</option>
-          {students.map((student) => (
-            <option key={student.id} value={student.id}>
-              {student.name} ({student.id})
-            </option>
-          ))}
-        </select>
+            <select name="studentId" value={formData.studentId} onChange={handleChange} required>
+      <option value="">Chọn sinh viên</option>
+      {students.map((student) => (
+        <option key={student.id} value={student.id}>
+        {student.lastName + ' ' + student.firstName} (Mã SV: {student.id})
+      </option>
+      
+      ))}
+</select>
+
       </div>
 
       <div>
@@ -113,7 +116,7 @@ export default function AddEnrollment({ onEnrollmentAdded }) {
           type="text"
           name="semester"
           value={formData.semester}
-          readOnly  // Học kỳ sẽ được tự động điền dựa trên khóa học
+          readOnly
         />
       </div>
 

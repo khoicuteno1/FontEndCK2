@@ -84,9 +84,9 @@ export default function EnrollmentList() {
               <tr key={enrollment.id}>
                 <td>{enrollment.studentId}</td>
                 <td>
-                  {enrollment.Student?.firstName} {enrollment.Student?.lastName}
+                  {enrollment.firstName} {enrollment.lastName}
                 </td>
-                <td>{enrollment.Course?.courseName}</td>
+                <td>{enrollment.courseName}</td>
                 <td>
                   {editingId === enrollment.id ? (
                     <input

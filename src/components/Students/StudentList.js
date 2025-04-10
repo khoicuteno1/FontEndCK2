@@ -128,7 +128,7 @@ const StudentList = () => {
               <label>Ngày Sinh:</label>
               <input
                 type="date"
-                value={currentStudent.dateOfBirth.split('T')[0]}
+                value={currentStudent.dateOfBirth ? currentStudent.dateOfBirth.split('T')[0] : ''}
                 onChange={(e) => setCurrentStudent({ ...currentStudent, dateOfBirth: e.target.value })}
               />
 
@@ -164,7 +164,7 @@ const StudentList = () => {
               <label>Ngày Nhập Học:</label>
               <input
                 type="date"
-                value={currentStudent.enrollmentDate.split('T')[0]}
+                value={currentStudent.enrollmentDate ? currentStudent.enrollmentDate.split('T')[0] : ''}
                 onChange={(e) => setCurrentStudent({ ...currentStudent, enrollmentDate: e.target.value })}
               />
               <button type="submit">Cập Nhật</button>

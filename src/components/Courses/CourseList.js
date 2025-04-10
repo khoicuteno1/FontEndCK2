@@ -81,8 +81,8 @@ const CourseList = () => {
                 <td>{course.courseName}</td>
                 <td>{course.credits}</td>
                 <td>{course.semester}</td>
-                <td>{course.Department?.departmentName || 'Không có'}</td>
-                <td>{course.Enrollments?.length || 0}</td>
+                <td>{course.departmentName || 'Không có'}</td>
+                <td>{course.studentCount || 0}</td>
                 <td>
                   <button className="icon-button" onClick={() => openEditModal(course)}>
                     <FiEdit />
